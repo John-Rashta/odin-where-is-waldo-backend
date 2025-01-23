@@ -109,10 +109,6 @@ const addToScoreboard = async function addToScoreboardFinishedGame(scoreInfo : s
     return score;
 };
 
-
-
-
-
 export {
     createCharacter,
     getCharactersForImage,
