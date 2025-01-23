@@ -16,6 +16,8 @@ datasource db {
 model Scoreboard {
   id String @id @default(uuid())
   game Game?
+  map Image @relation(fields: [mapid], references: [id])
+  mapid Int
   username String
   time DateTime
 
@@ -25,6 +27,7 @@ model Game {
   id String @id @default(uuid())
   startTime DateTime
   endTime DateTime?
+  status String
   gameChars Character[]  @relation("gameGoal")
   markers Character[] @relation("gameProgress")
   score Scoreboard? @relation(fields: [scoreid], references: [id])
@@ -49,4 +52,5 @@ model Image {
   name String
   url String
   chars Character[]
+  scores Scoreboard[]
 }
