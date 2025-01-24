@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "Game" ALTER COLUMN "startTime" SET DATA TYPE TEXT,
+ALTER COLUMN "endTime" SET DATA TYPE TEXT;
+
+-- AlterTable
+ALTER TABLE "Scoreboard" ALTER COLUMN "time" SET DATA TYPE TEXT;

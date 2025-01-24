@@ -5,8 +5,10 @@ const createCharacter = async function createCharacterInDatabase(charInfo : Char
     await prisma.character.create({
         data: {
             name: charInfo.name,
-            coordX: charInfo.coordX,
-            coordY: charInfo.coordY,
+            coordXMax: charInfo.coordXMax,
+            coordYMax: charInfo.coordYMax,
+            coordXMin: charInfo.coordXMin,
+            coordYMin: charInfo.coordYMin,
             url: charInfo.url,
             map: {
                 connect: {
@@ -36,6 +38,11 @@ const startGame = async function startGameInDatabase(gameInfo: gameCreation) {
                 connect : [
                     ...gameInfo.chars
                 ]
+            },
+            map: {
+                connect: {
+                    id: gameInfo.map
+                }
             }
         }
     });
@@ -45,6 +52,10 @@ const getGame = async function getGameFromDatabase(gameid: string) {
     const foundGame = await prisma.game.findFirst({
         where:{
             id: gameid
+        },
+        include: {
+            gameChars: true,
+            markers: true,
         }
     });
     
@@ -66,7 +77,7 @@ const updateMarker = async function updateMarkerInGameInDatabase(charid: string,
     });
 };
 
-const endGame = async function endGameInDatabase(gameid: string, endTime: Date) {
+const endGame = async function endGameInDatabase(gameid: string, endTime: number) {
     await prisma.game.update({
         where:{
             id: gameid
@@ -79,7 +90,7 @@ const endGame = async function endGameInDatabase(gameid: string, endTime: Date) 
 };
 
 const getScoreboard = async function getScoreboardFromDatabase() {
-    const score = prisma.scoreboard.findMany({
+    const score = await prisma.scoreboard.findMany({
         orderBy: {
             time: 'desc'
         }
@@ -89,7 +100,7 @@ const getScoreboard = async function getScoreboardFromDatabase() {
 };
 
 const addToScoreboard = async function addToScoreboardFinishedGame(scoreInfo : scoreCreation) {
-    const score = prisma.scoreboard.create({
+    const score = await prisma.scoreboard.create({
         data: {
             game: {
                 connect: {
@@ -109,6 +120,16 @@ const addToScoreboard = async function addToScoreboardFinishedGame(scoreInfo : s
     return score;
 };
 
+const getImage = async function basicFunctionToCheckIfImageExists(imageid: number) {
+    const findImage = await prisma.image.findFirst({
+        where: {
+            id: imageid
+        }
+    });
+
+    return findImage;
+}
+
 export {
     createCharacter,
     getCharactersForImage,
@@ -118,4 +139,5 @@ export {
     endGame,
     getScoreboard,
     addToScoreboard,
+    getImage,
 };

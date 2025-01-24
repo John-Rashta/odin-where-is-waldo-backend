@@ -19,15 +19,17 @@ model Scoreboard {
   map Image @relation(fields: [mapid], references: [id])
   mapid Int
   username String
-  time DateTime
+  time String
 
 }
 
 model Game {
   id String @id @default(uuid())
-  startTime DateTime
-  endTime DateTime?
+  startTime Int
+  endTime Int?
   status String
+  map Image @relation(fields: [mapid], references: [id])
+  mapid Int
   gameChars Character[]  @relation("gameGoal")
   markers Character[] @relation("gameProgress")
   score Scoreboard? @relation(fields: [scoreid], references: [id])
@@ -38,8 +40,10 @@ model Character {
   id String @id @default(uuid())
   name String
   url String
-  coordX Float
-  coordY Float
+  coordXMax Float
+  coordXMin Float
+  coordYMax Float
+  coordYMin Float
   map Image @relation(fields: [mapid], references: [id])
   gameSet Game[] @relation("gameGoal")
   gameTrack Game[] @relation("gameProgress")
@@ -53,4 +57,5 @@ model Image {
   url String
   chars Character[]
   scores Scoreboard[]
+   games Game[]
 }

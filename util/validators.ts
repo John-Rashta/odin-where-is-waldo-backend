@@ -20,8 +20,14 @@ const charInfoValidator = [
         .isUUID().withMessage("Must be an UUID.")
 ]
 
+const usernameValidator = [
+    body("username")
+        .isAlphanumeric().withMessage("Only letters and numbers.")
+];
+
 export {
     gameIdValidator,
     imageIdValidator,
-    charInfoValidator
+    charInfoValidator,
+    usernameValidator
 };

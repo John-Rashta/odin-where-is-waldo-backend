@@ -2,20 +2,23 @@ import { Prisma } from "@prisma/client";
 
 interface CharCreation {
     name : string,
-    coordX : number,
-    coordY : number,
+    coordXMax : number,
+    coordYMax : number,
+    coordXMin : number,
+    coordYMin : number,
     url: string,
     mapid: number
 
 }
 
 interface gameCreation {
-    startTime: Date,
+    startTime: number,
     chars: Prisma.CharacterWhereUniqueInput[],
+    map: number
 }
 
 interface scoreCreation {
-    time: Date,
+    time: string,
     username: string,
     map: number,
     game: string
