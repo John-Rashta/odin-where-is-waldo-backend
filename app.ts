@@ -15,6 +15,14 @@ app.use("/game", gameRoute);
 app.use("/scoreboard", scoreRoute);
 app.use("/image", imageRoute);
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const errorHandler: express.ErrorRequestHandler = (err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({message: "internal error"});
+  return;
+}
+app.use(errorHandler);
+
 const PORT = 3000;
 
 app.listen(PORT, () => {
