@@ -1,7 +1,7 @@
 import asyncHandler from "express-async-handler";
 import { matchedData } from "express-validator";
 import { validationErrorMiddleware } from "../middleware/validationErrorMiddleware";
-import { getGame, getCharactersForImage, startGame, getImage } from "../util/queries";
+import { getGame, getCharactersForImage, startGame, getImage, updateMarker, endGame } from "../util/queries";
 
 const createGame = [
     validationErrorMiddleware,
@@ -30,7 +30,7 @@ const createGame = [
 
             const selectedChars = possibleChars.slice(0, 3);
 
-            await startGame({
+            const newGame = await startGame({
                 startTime: Date.now(), 
                 chars: selectedChars.map((char) => {
                     return {id: char.id}
@@ -46,12 +46,55 @@ const createGame = [
                 }
             });
 
-            res.status(200).json({chars: publicCharInfo});
+            res.status(200).json({chars: publicCharInfo, game: newGame.id});
         }
     )
 ];
 
+const updateGame = [
+    validationErrorMiddleware,
+    asyncHandler(
+        async (req, res) => {
+            const formData = matchedData(req);
+            const gameData = await getGame(formData.gameid);
+            if (!gameData) {
+                res.status(400).json();
+                return;
+            }
+
+            if (gameData?.status === "finished") {
+                res.status(400).json({message: "Invalid Game State"});
+                return;
+            }
+
+            const targetChar = gameData.gameChars.find((char) => char.id === formData.char);
+            if (!targetChar) {
+                res.status(400).json();
+                return;
+            };
+
+            const checkCoords = (formData.coordX <= targetChar.coordXMax && formData.coordX >= targetChar.coordXMin &&
+                formData.coordY <= targetChar.coordYMax && formData.coordY >= targetChar.coordYMin);
+            
+            if (!checkCoords) {
+                res.status(404).json({message: "Incorrect Coordinates"});
+                return;
+            };
+
+            await updateMarker(targetChar.id, gameData.id);
+
+            if (gameData.markers.length + 1 === 3) {
+                await endGame(gameData.id, Date.now());
+                res.status(200).json({message: "Game Finished"});
+                return;
+            };
+
+            res.status(200).json({message: "Correct Coordinates"});
+    })
+]
+
 export {
-    createGame
+    createGame,
+    updateGame,
 };
 

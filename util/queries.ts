@@ -30,7 +30,7 @@ const getCharactersForImage = async function getAllCharactersForSpecificImage( m
 };
 
 const startGame = async function startGameInDatabase(gameInfo: gameCreation) {
-    await prisma.game.create({
+    const newGame = await prisma.game.create({
         data: {
             startTime: gameInfo.startTime,
             status: "inProgress",
@@ -46,6 +46,8 @@ const startGame = async function startGameInDatabase(gameInfo: gameCreation) {
             }
         }
     });
+
+    return newGame;
 };
 
 const getGame = async function getGameFromDatabase(gameid: string) {
@@ -128,6 +130,19 @@ const getImage = async function basicFunctionToCheckIfImageExists(imageid: numbe
     });
 
     return findImage;
+};
+
+const getImages = async function getAllImagesFromDatabase() {
+    const allImages = await prisma.image.findMany({
+        select: {
+            id: true,
+            name: true,
+            url: true,
+
+        }
+    });
+
+    return allImages;
 }
 
 export {
@@ -140,4 +155,5 @@ export {
     getScoreboard,
     addToScoreboard,
     getImage,
+    getImages,
 };
