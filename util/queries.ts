@@ -1,6 +1,7 @@
 import prisma from "../config/client";
-import { CharCreation, gameCreation, scoreCreation } from "./type/interfaces";
+import { CharCreation, gameCreation, imageCreation, scoreCreation } from "./type/interfaces";
 
+/// POOL AND TESTING QUERIES
 const createCharacter = async function createCharacterInDatabase(charInfo : CharCreation ) {
     await prisma.character.create({
         data: {
@@ -19,6 +20,24 @@ const createCharacter = async function createCharacterInDatabase(charInfo : Char
     })
 };
 
+const createImage = async function createImageInDatabase(imageInfo: imageCreation) {
+    await prisma.image.create({
+        data: {
+            name: imageInfo.name,
+            url: imageInfo.url
+        }
+    })
+};
+
+const deleteGames = async function deleteGamesFromDatabase() {
+    await prisma.game.deleteMany();
+};
+
+const deleteScores = async function deleteScoresFromDatabase() {
+    await prisma.scoreboard.deleteMany();
+};
+
+/// END OF POOL AND TESTING QUERIES
 const getCharactersForImage = async function getAllCharactersForSpecificImage( mapid : number) {
     const allChars = await prisma.character.findMany({
         where: {
@@ -30,6 +49,7 @@ const getCharactersForImage = async function getAllCharactersForSpecificImage( m
 };
 
 const startGame = async function startGameInDatabase(gameInfo: gameCreation) {
+    
     const newGame = await prisma.game.create({
         data: {
             startTime: gameInfo.startTime,
@@ -79,7 +99,7 @@ const updateMarker = async function updateMarkerInGameInDatabase(charid: string,
     });
 };
 
-const endGame = async function endGameInDatabase(gameid: string, endTime: number) {
+const endGame = async function endGameInDatabase(gameid: string, endTime: string) {
     await prisma.game.update({
         where:{
             id: gameid
@@ -156,4 +176,7 @@ export {
     addToScoreboard,
     getImage,
     getImages,
+    createImage,
+    deleteGames,
+    deleteScores,
 };

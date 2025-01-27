@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "dev": "NODE_ENV=development npx tsx app.ts",
+    "test": "NODE_ENV=test jest",
     "lint": "eslint ."
   },
   "author": "",

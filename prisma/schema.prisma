@@ -25,8 +25,8 @@ model Scoreboard {
 
 model Game {
   id String @id @default(uuid())
-  startTime Int
-  endTime Int?
+  startTime String
+  endTime String?
   status String
   map Image @relation(fields: [mapid], references: [id])
   mapid Int
@@ -57,5 +57,5 @@ model Image {
   url String
   chars Character[]
   scores Scoreboard[]
-   games Game[]
+  games Game[]
 }

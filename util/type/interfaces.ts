@@ -12,7 +12,7 @@ interface CharCreation {
 }
 
 interface gameCreation {
-    startTime: number,
+    startTime: string,
     chars: Prisma.CharacterWhereUniqueInput[],
     map: number
 }
@@ -24,8 +24,14 @@ interface scoreCreation {
     game: string
 }
 
+interface imageCreation {
+    name: string,
+    url: string
+}
+
 export { 
     CharCreation,
     gameCreation,
     scoreCreation,
+    imageCreation,
 };

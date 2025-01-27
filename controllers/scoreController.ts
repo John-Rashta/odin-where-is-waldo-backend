@@ -6,7 +6,8 @@ import { getScoreboard, addToScoreboard, getGame } from "../util/queries";
 const getScore = asyncHandler(
     async (req, res) => {
         const scoreData = await getScoreboard();
-        if (!scoreData) {
+
+        if (scoreData.length < 1) {
             res.json({message: "No entries in Scoreboard."});
             return;
         };
@@ -30,7 +31,7 @@ const createScore = [
                 res.status(400).json({message: "Invalid Game State"});
             };
 
-            const miliSpent = findGame.endTime as number - findGame.startTime;
+            const miliSpent = Number(findGame.endTime) - Number(findGame.startTime);
             const seconds = miliSpent / 1000;
             const minutes = seconds / 60;
             const realSeconds = seconds % 60;
@@ -40,7 +41,7 @@ const createScore = [
             const finalTime = `${realMinutes}:${realSeconds}:${realMili}`;
 
             await addToScoreboard({time: finalTime, username: userData.username, map: findGame.mapid, game: findGame.id});
-            res.status(200).json();
+            res.status(200).json({message: "Added to Scoreboard"});
             return;
         }
     )
