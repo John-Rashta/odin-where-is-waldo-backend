@@ -5,6 +5,7 @@ import gameRoute from "../routes/gameRoute";
 import scoreRoute from "../routes/scoreRoute";
 import imageRoute from "../routes/imageRoute";
 import "dotenv/config";
+import { errorHandler } from '../middleware/errorMiddleware';
 const app = express();
 
 afterAll(() => {
@@ -17,12 +18,6 @@ app.use("/game", gameRoute);
 app.use("/scoreboard", scoreRoute);
 app.use("/image", imageRoute);
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const errorHandler: express.ErrorRequestHandler = (err, req, res, next) => {
-  console.error(err);
-  res.status(500).json({message: "internal error"});
-  return;
-}
 app.use(errorHandler);
 
 test("Getting images", done => {
@@ -47,6 +42,18 @@ test("Getting empty scoreboard", done => {
       .expect(200, done);
 });
 
+test("Starts game without query", (done) => {
+    request(app)
+        .post("/game")
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .then((res) => {
+            expect(res.body).toHaveProperty("chars");
+            expect(res.body).toHaveProperty("game");
+            done();
+        })
+});
+
 describe("Game Route Usage with Score Add", () => {
     let newGame : string;
     test("Starts game", (done) => {
@@ -69,7 +76,7 @@ describe("Game Route Usage with Score Add", () => {
             .send({
                 coordX: "1144",
                 coordY: "555",
-                char: "0402e9c6-5345-489c-8d24-a3e97dd530db",
+                char: "e76d8ef7-a1da-46d6-8040-b747b3382a68",
             })
             .expect("Content-Type", /json/)
             .expect({ 
@@ -84,10 +91,10 @@ describe("Game Route Usage with Score Add", () => {
             .send({
                 coordX: "110",
                 coordY: "315",
-                char: "1d9011dc-ca50-46c4-97f3-5837e08bcc22",
+                char: "5a5b2583-23fb-4255-bf03-1ef6d065951b",
             })
             .expect("Content-Type", /json/)
-            .expect({ 
+            .expect({
                 message: "Correct Coordinates"
                 })
             .expect(200, done);
@@ -99,7 +106,7 @@ describe("Game Route Usage with Score Add", () => {
             .send({
                 coordX: "850",
                 coordY: "750",
-                char: "fdc10bb9-bf20-41db-b676-3ec571ccce3d",
+                char: "666050b1-95f6-4bf4-ac84-9498a0e97cd3",
             })
             .expect("Content-Type", /json/)
             .expect({ 
@@ -107,6 +114,24 @@ describe("Game Route Usage with Score Add", () => {
                 })
             .expect(200, done);
     });
+
+    ///moved this error here so that another game doesn't have to be completed just to test this
+    test("Doesn't update if game is finished already", (done) => {
+        request(app)
+            .put(`/game/${newGame}`)
+            .send({
+                coordX: "110",
+                coordY: "315",
+                char: "1d9011dc-ca50-46c4-97f3-5837e08bcc22",
+            })
+            .expect("Content-Type", /json/)
+            .expect({ 
+                message: "Invalid Game State"
+                })
+            .expect(400, done);
+    });
+
+
 
     test("Add to Scoreboard", done => {
         request(app)
@@ -118,11 +143,7 @@ describe("Game Route Usage with Score Add", () => {
             .expect({ 
                 message: "Added to Scoreboard"
                 })
-            .then((res) => {
-                console.log(res.body)
-                done()
-            })
-            ///.expect(200, done);
+            .expect(200, done);
     });
 })
 

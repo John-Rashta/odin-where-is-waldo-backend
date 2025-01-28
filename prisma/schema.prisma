@@ -15,7 +15,8 @@ datasource db {
 
 model Scoreboard {
   id String @id @default(uuid())
-  game Game?
+  game Game @relation(fields: [gameid], references: [id])
+  gameid String @unique
   map Image @relation(fields: [mapid], references: [id])
   mapid Int
   username String
@@ -32,8 +33,7 @@ model Game {
   mapid Int
   gameChars Character[]  @relation("gameGoal")
   markers Character[] @relation("gameProgress")
-  score Scoreboard? @relation(fields: [scoreid], references: [id])
-  scoreid String? @unique
+  score Scoreboard?
 }
 
 model Character {

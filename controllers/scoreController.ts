@@ -30,6 +30,7 @@ const createScore = [
             }
             if (findGame.status !== "finished") {
                 res.status(400).json({message: "Invalid Game State"});
+                return;
             };
 
             const miliSpent = Number(findGame.endTime) - Number(findGame.startTime);

@@ -19,6 +19,7 @@ const createGame = [
 
             if (!checkIfImageExists) {
                 res.status(400).json();
+                return;
             }
             
             const possibleChars = await getCharactersForImage(imageId);
@@ -47,6 +48,7 @@ const createGame = [
             });
             
             res.status(200).json({chars: publicCharInfo, game: newGame.id});
+            return;
         }
     )
 ];
@@ -77,7 +79,7 @@ const updateGame = [
                 formData.coordY <= targetChar.coordYMax && formData.coordY >= targetChar.coordYMin);
             
             if (!checkCoords) {
-                res.status(404).json({message: "Incorrect Coordinates"});
+                res.status(400).json({message: "Incorrect Coordinates"});
                 return;
             };
 
