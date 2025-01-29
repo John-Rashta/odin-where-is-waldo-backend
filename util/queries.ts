@@ -113,6 +113,17 @@ const endGame = async function endGameInDatabase(gameid: string, endTime: string
 
 const getScoreboard = async function getScoreboardFromDatabase() {
     const score = await prisma.scoreboard.findMany({
+        select: {
+            time: true,
+            username: true,
+            map: {
+                select: {
+                    name: true,
+                    id: true,
+                }
+            }
+
+        },
         orderBy: {
             time: 'desc'
         }
