@@ -122,7 +122,7 @@ describe("Game Route Usage with Score Add", () => {
             .send({
                 coordX: "110",
                 coordY: "315",
-                char: "1d9011dc-ca50-46c4-97f3-5837e08bcc22",
+                char: "666050b1-95f6-4bf4-ac84-9498a0e97cd3",
             })
             .expect("Content-Type", /json/)
             .expect({ 
