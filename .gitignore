@@ -130,3 +130,4 @@ dist
 .pnp.*
 
 /util/populatedb.ts
+/util/populateMain.ts
