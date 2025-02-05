@@ -33,6 +33,11 @@ const createScore = [
                 return;
             };
 
+            if (findGame.score) {
+                res.status(400).json({message: "Game Already Added"});
+                return;
+            }
+
             const miliSpent = Number(findGame.endTime) - Number(findGame.startTime);
             const seconds = Math.floor(miliSpent / 1000);
             const minutes = Math.floor(seconds / 60);

@@ -78,6 +78,7 @@ const getGame = async function getGameFromDatabase(gameid: string) {
         include: {
             gameChars: true,
             markers: true,
+            score: true,
         }
     });
     
