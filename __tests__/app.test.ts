@@ -1,6 +1,6 @@
 import request from 'supertest';
 import express from 'express';
-import { deleteGames, deleteScores } from '../util/queries';
+import { deleteGamesAndScores } from '../util/queries';
 import gameRoute from "../routes/gameRoute";
 import scoreRoute from "../routes/scoreRoute";
 import imageRoute from "../routes/imageRoute";
@@ -9,7 +9,7 @@ import { errorHandler } from '../middleware/errorMiddleware';
 const app = express();
 
 afterAll(() => {
-    return Promise.all([ deleteScores(),deleteGames()]);
+    return deleteGamesAndScores();
 })
 
 app.use(express.json());
@@ -48,7 +48,6 @@ test("Starts game without query", (done) => {
         .expect("Content-Type", /json/)
         .expect(200)
         .then((res) => {
-            expect(res.body).toHaveProperty("chars");
             expect(res.body).toHaveProperty("game");
             done();
         })
@@ -63,9 +62,19 @@ describe("Game Route Usage with Score Add", () => {
             .expect("Content-Type", /json/)
             .expect(200)
             .then((res) => {
-                expect(res.body).toHaveProperty("chars");
                 expect(res.body).toHaveProperty("game");
                 newGame = res.body.game;
+                done();
+            })
+    });
+
+    test("Gets characters for game", (done) => {
+        request(app)
+            .get(`/game/${newGame}/characters`)
+            .expect("Content-Type", /json/)
+            .expect(200)
+            .then((res) => {
+                expect(res.body).toHaveProperty("chars");
                 done();
             })
     });
@@ -144,6 +153,20 @@ describe("Game Route Usage with Score Add", () => {
                 message: "Added to Scoreboard"
                 })
             .expect(200, done);
+    });
+
+    ///moved this error here so that another game doesn't have to be completed just to test this
+    test("Doesnt add more than once to scoreboard", done => {
+        request(app)
+            .post(`/scoreboard/${newGame}`)
+            .send({
+                username: "blueeyes456"
+                })
+            .expect("Content-Type", /json/)
+            .expect({ 
+                message: "Game Already Added"
+                })
+            .expect(400, done);
     });
 })
 

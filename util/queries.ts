@@ -29,12 +29,9 @@ const createImage = async function createImageInDatabase(imageInfo: imageCreatio
     })
 };
 
-const deleteGames = async function deleteGamesFromDatabase() {
-    await prisma.game.deleteMany();
-};
-
-const deleteScores = async function deleteScoresFromDatabase() {
+const deleteGamesAndScores = async function deleteTestStuffFromDatabase() {
     await prisma.scoreboard.deleteMany();
+    await prisma.game.deleteMany();
 };
 
 /// END OF POOL AND TESTING QUERIES
@@ -189,6 +186,5 @@ export {
     getImage,
     getImages,
     createImage,
-    deleteGames,
-    deleteScores,
+    deleteGamesAndScores,
 };

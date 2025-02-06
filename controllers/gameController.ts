@@ -39,15 +39,7 @@ const createGame = [
                 map: imageId  
             });
             
-            const publicCharInfo = selectedChars.map((char) => {
-                return {
-                    id: char.id,
-                    imageUrl: char.url,
-                    name: char.name
-                }
-            });
-            
-            res.status(200).json({chars: publicCharInfo, game: newGame.id});
+            res.status(200).json({game: newGame.id});
             return;
         }
     )
@@ -96,8 +88,37 @@ const updateGame = [
     })
 ]
 
+const gameCharacters = [
+    validationErrorMiddleware,
+    asyncHandler(async (req, res) => {
+        const formData = matchedData(req);
+        const gameData = await getGame(formData.gameid);
+        if (!gameData) {
+            res.status(400).json();
+            return;
+        }
+
+        if (gameData?.status === "finished") {
+            res.status(400).json({message: "Game already finished"});
+            return;
+        }
+
+        const charsInfo = gameData.gameChars.map((char) => {
+            return {
+                id: char.id,
+                imageUrl: char.url,
+                name: char.name
+            }
+        });
+
+        res.status(200).json({chars: charsInfo});
+        return;
+})
+]
+
 export {
     createGame,
     updateGame,
+    gameCharacters,
 };
 

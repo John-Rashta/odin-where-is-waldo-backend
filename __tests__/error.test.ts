@@ -15,9 +15,9 @@ app.use("/image", imageRoute);
 
 app.use(errorHandler);
 
-/// only error missing is updating when game is already finished- moved to app.test where proper game is already tested
+/// 2 errors are in app.test.ts for efficiency reasons
 
-test("Doesnt start if image doesn't.", (done) => {
+test("Doesnt start if image doesn't exist.", (done) => {
         request(app)
             .post("/game")
             .query({imageid: 29})
@@ -56,7 +56,6 @@ describe("Test errors during gameplay", () => {
             .expect("Content-Type", /json/)
             .expect(200)
             .then((res) => {
-                expect(res.body).toHaveProperty("chars");
                 expect(res.body).toHaveProperty("game");
                 newGame = res.body.game;
                 done();
