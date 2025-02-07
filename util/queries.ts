@@ -123,7 +123,7 @@ const getScoreboard = async function getScoreboardFromDatabase() {
 
         },
         orderBy: {
-            time: 'desc'
+            time: 'asc'
         }
     });
     
