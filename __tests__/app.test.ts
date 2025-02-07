@@ -169,6 +169,29 @@ describe("Game Route Usage with Score Add", () => {
                 })
             .expect(400, done);
     });
+
+    test("gets Score of Game", done => {
+        request(app)
+            .get(`/scoreboard/${newGame}`)
+            .expect("Content-Type", /json/)
+            .expect(200)
+            .then((res) => {
+                expect(res.body).toHaveProperty("score");
+                done();
+            })
+    });
+
+    test("gets ScoreBoard", done => {
+        request(app)
+            .get(`/scoreboard`)
+            .expect("Content-Type", /json/)
+            .expect(200)
+            .then((res) => {
+                expect(res.body).toHaveProperty("scores");
+                done();
+            })
+    });
+
 })
 
 

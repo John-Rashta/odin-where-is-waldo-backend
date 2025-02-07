@@ -174,6 +174,27 @@ const getImages = async function getAllImagesFromDatabase() {
     return allImages;
 }
 
+const getScoreByGame = async function getPossibleScoreOfGameId(gameid: string) {
+    const possibleGame = await prisma.scoreboard.findFirst({
+        select: {
+            time: true,
+            username:true,
+            map: {
+                select: {
+                    name: true,
+                    id: true,
+                }
+            }
+        },
+        where: {
+            gameid
+        }
+    });
+    
+    return possibleGame;
+
+}
+
 export {
     createCharacter,
     getCharactersForImage,
@@ -187,4 +208,5 @@ export {
     getImages,
     createImage,
     deleteGamesAndScores,
+    getScoreByGame
 };

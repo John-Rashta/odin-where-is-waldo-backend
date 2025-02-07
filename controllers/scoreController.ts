@@ -1,7 +1,7 @@
 import asyncHandler from "express-async-handler";
 import { matchedData } from "express-validator";
 import { validationErrorMiddleware } from "../middleware/validationErrorMiddleware";
-import { getScoreboard, addToScoreboard, getGame } from "../util/queries";
+import { getScoreboard, addToScoreboard, getGame, getScoreByGame } from "../util/queries";
 import { paddTo2Digits } from "../util/padder";
 
 const getScore = asyncHandler(
@@ -13,7 +13,7 @@ const getScore = asyncHandler(
             return;
         };
         
-        res.json(scoreData);
+        res.json({scores:scoreData});
         return;
     }
 );
@@ -56,7 +56,26 @@ const createScore = [
 
 ]
 
+const getGameScore = [
+    validationErrorMiddleware,
+    asyncHandler(
+        async (req, res) => {
+            const userData = matchedData(req);
+            const findScore = await getScoreByGame(userData.gameid);
+
+            if (!findScore) {
+                res.status(400).json({message: "Game not in Scoreboard"});
+                return;
+            }
+
+            res.status(200).json({score: findScore});
+            return;
+        }
+    )
+]
+
 export {
     getScore,
     createScore,
+    getGameScore,
 };
