@@ -75,6 +75,7 @@ describe("Game Route Usage with Score Add", () => {
             .expect(200)
             .then((res) => {
                 expect(res.body).toHaveProperty("chars");
+                expect(res.body).toHaveProperty("foundChars");
                 done();
             })
     });

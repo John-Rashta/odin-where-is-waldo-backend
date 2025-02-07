@@ -111,7 +111,13 @@ const gameCharacters = [
             }
         });
 
-        res.status(200).json({chars: charsInfo});
+        const foundChars = gameData.markers.map((mark) => {
+            return  {
+                id: mark.id
+            }
+        });
+
+        res.status(200).json({chars: charsInfo, foundChars});
         return;
 })
 ]
