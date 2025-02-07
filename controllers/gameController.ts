@@ -111,11 +111,7 @@ const gameCharacters = [
             }
         });
 
-        const foundChars = gameData.markers.map((mark) => {
-            return  {
-                id: mark.id
-            }
-        });
+        const foundChars = gameData.markers.map((mark) => mark.id);
 
         res.status(200).json({chars: charsInfo, foundChars});
         return;
