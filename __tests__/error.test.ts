@@ -74,7 +74,7 @@ describe("Test errors during gameplay", () => {
             .expect({ 
                 message: "Incorrect Coordinates"
                 })
-            .expect(400, done);
+            .expect(200, done);
     });
 
     test("Cant add to scoreboard if game is in progress", done => {

@@ -63,7 +63,7 @@ const updateGame = [
 
             const targetChar = gameData.gameChars.find((char) => char.id === formData.char);
             if (!targetChar) {
-                res.status(400).json();
+                res.status(400).json({message: "Character not present"});
                 return;
             };
 
@@ -71,7 +71,7 @@ const updateGame = [
                 formData.coordY <= targetChar.coordYMax && formData.coordY >= targetChar.coordYMin);
             
             if (!checkCoords) {
-                res.status(400).json({message: "Incorrect Coordinates"});
+                res.status(200).json({message: "Incorrect Coordinates"});
                 return;
             };
 
