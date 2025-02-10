@@ -98,11 +98,6 @@ const gameCharacters = [
             return;
         }
 
-        if (gameData?.status === "finished") {
-            res.status(400).json({message: "Game already finished"});
-            return;
-        }
-
         const charsInfo = gameData.gameChars.map((char) => {
             return {
                 id: char.id,

@@ -2,7 +2,7 @@ import asyncHandler from "express-async-handler";
 import { matchedData } from "express-validator";
 import { validationErrorMiddleware } from "../middleware/validationErrorMiddleware";
 import { getScoreboard, addToScoreboard, getGame, getScoreByGame } from "../util/queries";
-import { paddTo2Digits } from "../util/padder";
+import { paddTo2Digits, paddTo3Digits } from "../util/padder";
 
 const getScore = asyncHandler(
     async (req, res) => {
@@ -45,7 +45,7 @@ const createScore = [
             const realMinutes = minutes % 60;
             const realMili = miliSpent % 1000;
 
-            const finalTime = `${paddTo2Digits(realMinutes)}:${paddTo2Digits(realSeconds)}:${realMili}`;
+            const finalTime = `${paddTo2Digits(realMinutes)}:${paddTo2Digits(realSeconds)}:${paddTo3Digits(realMili)}`;
 
             await addToScoreboard({time: finalTime, username: userData.username, map: findGame.mapid, game: findGame.id});
             res.status(200).json({message: "Added to Scoreboard"});

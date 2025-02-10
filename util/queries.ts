@@ -120,7 +120,8 @@ const getScoreboard = async function getScoreboardFromDatabase() {
                     name: true,
                     id: true,
                 }
-            }
+            },
+            gameid: true
 
         },
         orderBy: {
