@@ -38,7 +38,7 @@ const createScore = [
                 return;
             }
 
-            const miliSpent = Number(findGame.endTime) - Number(findGame.startTime);
+            const miliSpent = Math.abs(Number(findGame.endTime) - Number(findGame.startTime));
             const seconds = Math.floor(miliSpent / 1000);
             const minutes = Math.floor(seconds / 60);
             const realSeconds = seconds % 60;
