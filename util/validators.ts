@@ -13,9 +13,9 @@ const imageIdValidator = [
 
 const charInfoValidator = [
     body("coordX")
-        .toFloat().isFloat().withMessage("Must be an a Number"),
+        .toFloat().isFloat().withMessage("Must be a Number"),
     body("coordY")
-        .toFloat().isFloat().withMessage("Must be an a Number"),
+        .toFloat().isFloat().withMessage("Must be a Number"),
     body("char")
         .isUUID().withMessage("Must be an UUID")
 ]
