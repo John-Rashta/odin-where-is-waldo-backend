@@ -25,7 +25,7 @@ const createScore = [
             const userData = matchedData(req);
             const findGame = await getGame(userData.gameid);
             if (!findGame) {
-                res.status(400).json();
+                res.status(400).json({message: "Game Doesn't Exist"});
                 return;
             }
             if (findGame.status !== "finished") {
