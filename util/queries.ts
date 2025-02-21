@@ -1,214 +1,229 @@
 import prisma from "../config/client";
-import { CharCreation, gameCreation, imageCreation, scoreCreation } from "./type/interfaces";
+import {
+  CharCreation,
+  gameCreation,
+  imageCreation,
+  scoreCreation,
+} from "./type/interfaces";
 
 /// POOL AND TESTING QUERIES
-const createCharacter = async function createCharacterInDatabase(charInfo : CharCreation ) {
-    await prisma.character.create({
-        data: {
-            name: charInfo.name,
-            coordXMax: charInfo.coordXMax,
-            coordYMax: charInfo.coordYMax,
-            coordXMin: charInfo.coordXMin,
-            coordYMin: charInfo.coordYMin,
-            url: charInfo.url,
-            map: {
-                connect: {
-                    id: charInfo.mapid
-                }
-            }
-        }
-    })
+const createCharacter = async function createCharacterInDatabase(
+  charInfo: CharCreation,
+) {
+  await prisma.character.create({
+    data: {
+      name: charInfo.name,
+      coordXMax: charInfo.coordXMax,
+      coordYMax: charInfo.coordYMax,
+      coordXMin: charInfo.coordXMin,
+      coordYMin: charInfo.coordYMin,
+      url: charInfo.url,
+      map: {
+        connect: {
+          id: charInfo.mapid,
+        },
+      },
+    },
+  });
 };
 
-const createImage = async function createImageInDatabase(imageInfo: imageCreation) {
-    await prisma.image.create({
-        data: {
-            name: imageInfo.name,
-            url: imageInfo.url
-        }
-    })
+const createImage = async function createImageInDatabase(
+  imageInfo: imageCreation,
+) {
+  await prisma.image.create({
+    data: {
+      name: imageInfo.name,
+      url: imageInfo.url,
+    },
+  });
 };
 
 const deleteGamesAndScores = async function deleteTestStuffFromDatabase() {
-    await prisma.scoreboard.deleteMany();
-    await prisma.game.deleteMany();
+  await prisma.scoreboard.deleteMany();
+  await prisma.game.deleteMany();
 };
 
 /// END OF POOL AND TESTING QUERIES
-const getCharactersForImage = async function getAllCharactersForSpecificImage( mapid : number) {
-    const allChars = await prisma.character.findMany({
-        where: {
-            mapid: mapid
-        }
-    });
+const getCharactersForImage = async function getAllCharactersForSpecificImage(
+  mapid: number,
+) {
+  const allChars = await prisma.character.findMany({
+    where: {
+      mapid: mapid,
+    },
+  });
 
-    return allChars;
+  return allChars;
 };
 
 const startGame = async function startGameInDatabase(gameInfo: gameCreation) {
-    
-    const newGame = await prisma.game.create({
-        data: {
-            startTime: gameInfo.startTime,
-            status: "inProgress",
-            gameChars : {
-                connect : [
-                    ...gameInfo.chars
-                ]
-            },
-            map: {
-                connect: {
-                    id: gameInfo.map
-                }
-            }
-        }
-    });
+  const newGame = await prisma.game.create({
+    data: {
+      startTime: gameInfo.startTime,
+      status: "inProgress",
+      gameChars: {
+        connect: [...gameInfo.chars],
+      },
+      map: {
+        connect: {
+          id: gameInfo.map,
+        },
+      },
+    },
+  });
 
-    return newGame;
+  return newGame;
 };
 
 const getGame = async function getGameFromDatabase(gameid: string) {
-    const foundGame = await prisma.game.findFirst({
-        where:{
-            id: gameid
-        },
-        include: {
-            gameChars: true,
-            markers: true,
-            score: true,
-        }
-    });
-    
-    return foundGame;
+  const foundGame = await prisma.game.findFirst({
+    where: {
+      id: gameid,
+    },
+    include: {
+      gameChars: true,
+      markers: true,
+      score: true,
+    },
+  });
+
+  return foundGame;
 };
 
-const updateMarker = async function updateMarkerInGameInDatabase(charid: string, gameid: string) {
-    await prisma.game.update({
-        where: {
-            id: gameid
+const updateMarker = async function updateMarkerInGameInDatabase(
+  charid: string,
+  gameid: string,
+) {
+  await prisma.game.update({
+    where: {
+      id: gameid,
+    },
+    data: {
+      markers: {
+        connect: {
+          id: charid,
         },
-        data : {
-            markers : {
-                connect: {
-                    id: charid
-                }
-            }
-        }
-    });
+      },
+    },
+  });
 };
 
-const endGame = async function endGameInDatabase(gameid: string, endTime: string) {
-    await prisma.game.update({
-        where:{
-            id: gameid
-        },
-        data:{
-            endTime,
-            status: "finished"
-        }
-    });
+const endGame = async function endGameInDatabase(
+  gameid: string,
+  endTime: string,
+) {
+  await prisma.game.update({
+    where: {
+      id: gameid,
+    },
+    data: {
+      endTime,
+      status: "finished",
+    },
+  });
 };
 
 const getScoreboard = async function getScoreboardFromDatabase() {
-    const score = await prisma.scoreboard.findMany({
-        take: 20,
+  const score = await prisma.scoreboard.findMany({
+    take: 20,
+    select: {
+      time: true,
+      username: true,
+      map: {
         select: {
-            time: true,
-            username: true,
-            map: {
-                select: {
-                    name: true,
-                    id: true,
-                }
-            },
-            gameid: true
-
+          name: true,
+          id: true,
         },
-        orderBy: {
-            time: 'asc'
-        }
-    });
-    
-    return score;
+      },
+      gameid: true,
+    },
+    orderBy: {
+      time: "asc",
+    },
+  });
+
+  return score;
 };
 
-const addToScoreboard = async function addToScoreboardFinishedGame(scoreInfo : scoreCreation) {
-    const score = await prisma.scoreboard.create({
-        data: {
-            game: {
-                connect: {
-                    id: scoreInfo.game
-                }
-            },
-            map: {
-                connect: {
-                    id: scoreInfo.map
-                }
-            },
-            username: scoreInfo.username,
-            time: scoreInfo.time
-        }
-    });
+const addToScoreboard = async function addToScoreboardFinishedGame(
+  scoreInfo: scoreCreation,
+) {
+  const score = await prisma.scoreboard.create({
+    data: {
+      game: {
+        connect: {
+          id: scoreInfo.game,
+        },
+      },
+      map: {
+        connect: {
+          id: scoreInfo.map,
+        },
+      },
+      username: scoreInfo.username,
+      time: scoreInfo.time,
+    },
+  });
 
-    return score;
+  return score;
 };
 
-const getImage = async function basicFunctionToCheckIfImageExists(imageid: number) {
-    const findImage = await prisma.image.findFirst({
-        where: {
-            id: imageid
-        }
-    });
+const getImage = async function basicFunctionToCheckIfImageExists(
+  imageid: number,
+) {
+  const findImage = await prisma.image.findFirst({
+    where: {
+      id: imageid,
+    },
+  });
 
-    return findImage;
+  return findImage;
 };
 
 const getImages = async function getAllImagesFromDatabase() {
-    const allImages = await prisma.image.findMany({
-        select: {
-            id: true,
-            name: true,
-            url: true,
+  const allImages = await prisma.image.findMany({
+    select: {
+      id: true,
+      name: true,
+      url: true,
+    },
+  });
 
-        }
-    });
-
-    return allImages;
-}
+  return allImages;
+};
 
 const getScoreByGame = async function getPossibleScoreOfGameId(gameid: string) {
-    const possibleGame = await prisma.scoreboard.findFirst({
+  const possibleGame = await prisma.scoreboard.findFirst({
+    select: {
+      time: true,
+      username: true,
+      map: {
         select: {
-            time: true,
-            username:true,
-            map: {
-                select: {
-                    name: true,
-                    id: true,
-                }
-            }
+          name: true,
+          id: true,
         },
-        where: {
-            gameid
-        }
-    });
-    
-    return possibleGame;
+      },
+    },
+    where: {
+      gameid,
+    },
+  });
 
-}
+  return possibleGame;
+};
 
 export {
-    createCharacter,
-    getCharactersForImage,
-    startGame,
-    updateMarker,
-    getGame,
-    endGame,
-    getScoreboard,
-    addToScoreboard,
-    getImage,
-    getImages,
-    createImage,
-    deleteGamesAndScores,
-    getScoreByGame
+  createCharacter,
+  getCharactersForImage,
+  startGame,
+  updateMarker,
+  getGame,
+  endGame,
+  getScoreboard,
+  addToScoreboard,
+  getImage,
+  getImages,
+  createImage,
+  deleteGamesAndScores,
+  getScoreByGame,
 };
