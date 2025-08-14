@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "NODE_ENV=development npx tsx app.ts",
     "test": "NODE_ENV=test jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "start": "npx tsx app.ts"
   },
   "author": "",
   "license": "ISC",
