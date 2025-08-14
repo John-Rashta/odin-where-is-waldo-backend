@@ -11,6 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
   origin: "https://odin-where-is-waldo-frontend-production.up.railway.app",
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use("/game", gameRoute);
