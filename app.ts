@@ -9,7 +9,9 @@ import { errorHandler } from "./middleware/errorMiddleware";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({
+  origin: "https://odin-where-is-waldo-frontend-production.up.railway.app",
+}));
 
 app.use("/game", gameRoute);
 app.use("/scoreboard", scoreRoute);
